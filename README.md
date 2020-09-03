@@ -191,10 +191,18 @@ renderer.hook((node) => {
 
 Creating a regular edge template named `components/alert.edge`.
 
-```html
-@set('classes', { tip: 'bg-teal-100 border-teal-500 text-teal-900', note: 'bg-indigo-100
-border-indigo-500 text-indigo-900', warning: 'bg-orange-100 border-orange-500 text-orange-900', })
-@set('iconClasses', { tip: 'text-teal-500', note: 'text-indigo-500', warning: 'text-orange-500', })
+```edge
+@set('classes', {
+	tip: 'bg-teal-100 border-teal-500 text-teal-900',
+	note: 'bg-indigo-100 border-indigo-500 text-indigo-900',
+	warning: 'bg-orange-100 border-orange-500 text-orange-900',
+})
+
+@set('iconClasses', {
+	tip: 'text-teal-500',
+	note: 'text-indigo-500',
+	warning: 'text-orange-500',
+})
 
 <div class="border-t-4 rounded-b px-4 py-3 shadow-md {{classes[type]}}" role="alert">
   <div class="flex">
