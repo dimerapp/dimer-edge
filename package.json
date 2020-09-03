@@ -1,6 +1,6 @@
 {
   "name": "dimer-edge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A dimer renderer for Edge templates",
   "scripts": {
     "mrm": "mrm --preset=@adonisjs/mrm-preset",
