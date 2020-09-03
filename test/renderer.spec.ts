@@ -40,10 +40,7 @@ test.group('Renderer', () => {
 
 		const ast = await new Markdown(markdown).toJSON()
 		const html = edge.render('guides', { ast })
-		assert.equal(
-			html,
-			'<p><img src="foo.jpg"/></p>'
-		)
+		assert.equal(html, '<p><img src="foo.jpg"/></p>')
 	})
 
 	test('render macros', async (assert) => {
@@ -55,10 +52,7 @@ test.group('Renderer', () => {
 
 		const ast = await new Markdown(markdown).toJSON()
 		const html = edge.render('guides', { ast })
-		assert.equal(
-			html,
-			'<div class="alert alert-note"><p>Hello</p></div>'
-		)
+		assert.equal(html, '<div class="alert alert-note"><p>Hello</p></div>')
 	})
 
 	test('render node using custom hook', async (assert) => {
@@ -70,7 +64,7 @@ test.group('Renderer', () => {
 		})
 
 		render.hook((node) => {
-			if(node.tag === 'div' && hasClass(node, 'alert')) {
+			if (node.tag === 'div' && hasClass(node, 'alert')) {
 				return component('custom-alert', { alert: node })
 			}
 		})
@@ -79,10 +73,7 @@ test.group('Renderer', () => {
 
 		const ast = await new Markdown(markdown).toJSON()
 		const html = edge.render('guides', { ast })
-		assert.equal(
-			html,
-			'<div class="note"><p>Hello</p></div>'
-		)
+		assert.equal(html, '<div class="note"><p>Hello</p></div>')
 	})
 
 	test('skip nodes from getting rendered', async (assert) => {
@@ -91,7 +82,7 @@ test.group('Renderer', () => {
 		edge.registerTemplate('guides', { template: '@dimerTree(ast.contents.children)' })
 
 		render.hook((node) => {
-			if(node.tag === 'div' && hasClass(node, 'alert')) {
+			if (node.tag === 'div' && hasClass(node, 'alert')) {
 				return false
 			}
 		})
@@ -100,10 +91,7 @@ test.group('Renderer', () => {
 
 		const ast = await new Markdown(markdown).toJSON()
 		const html = edge.render('guides', { ast })
-		assert.equal(
-			html,
-			''
-		)
+		assert.equal(html, '')
 	})
 
 	test('define node listener', async (assert) => {
@@ -113,16 +101,13 @@ test.group('Renderer', () => {
 		const renderer = new Renderer(edge)
 		edge.registerTemplate('guides', { template: '@dimerTree(ast.contents.children)' })
 
-		renderer.onNode((node) => (stack.push(node)))
+		renderer.onNode((node) => stack.push(node))
 
 		const markdown = ['[note]', 'Hello', '[/note]'].join('\n\n')
 
 		const ast = await new Markdown(markdown).toJSON()
 		const html = edge.render('guides', { ast })
-		assert.equal(
-			html,
-			'<div class="alert alert-note"><p>Hello</p></div>'
-		)
+		assert.equal(html, '<div class="alert alert-note"><p>Hello</p></div>')
 		assert.deepEqual(stack, [
 			{
 				type: 'element',
@@ -136,7 +121,7 @@ test.group('Renderer', () => {
 						tag: 'p',
 						props: {},
 						children: [{ type: 'text', value: 'Hello' }],
-					}
+					},
 				],
 			},
 			{
@@ -145,7 +130,7 @@ test.group('Renderer', () => {
 				props: {},
 				children: [{ type: 'text', value: 'Hello' }],
 			},
-			{ type: 'text', value: 'Hello' }
+			{ type: 'text', value: 'Hello' },
 		])
 	})
 })

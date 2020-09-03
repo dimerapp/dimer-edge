@@ -13,12 +13,7 @@ import * as utils from '../utils'
 import { elements } from '../elements'
 import { component } from '../component'
 import { DimerTree } from '../DimerTree'
-import {
-	AstText,
-	AstElement,
-	HookCallback,
-	ComponentOutput
-} from '../Contracts'
+import { AstText, AstElement, HookCallback, ComponentOutput } from '../Contracts'
 
 const NOOP = ['dimer::noop', {}] as ComponentOutput
 
