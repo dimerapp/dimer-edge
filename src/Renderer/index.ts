@@ -97,6 +97,13 @@ export class Renderer {
 	}
 
 	/**
+	 * Register plugin. It is invoked right away
+	 */
+	public use(callback: (renderer: this, edge: EdgeContract) => void) {
+		callback(this, this.edge)
+	}
+
+	/**
 	 * Returns the component for a given AST node
 	 */
 	public getComponentFor(node: AstElement | AstText): ReturnType<typeof component> {
