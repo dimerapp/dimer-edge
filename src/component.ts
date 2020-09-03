@@ -9,6 +9,10 @@
 
 import { ComponentOutput } from './Contracts'
 
+/**
+ * A simple function to return component name, props and slots
+ * as an array
+ */
 export function component(name: string, props: any, slots?: any): ComponentOutput {
 	return [name, props, slots]
 }

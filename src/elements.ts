@@ -10,8 +10,8 @@
 import { EdgeContract } from 'edge.js'
 
 import { component } from './component'
+import { isVoidElement } from './utils'
 import { AstText, AstElement } from './Contracts'
-import { isVoidElement, propsToAttributes } from './utils'
 
 /**
  * The AST tags emitted by Dimer default processor
@@ -90,9 +90,9 @@ export const elements = TAGS.reduce<{
 			init: (edge) =>
 				edge.registerTemplate(`dimer::${tag}`, {
 					template: isVoidElement(tag)
-						? [`<${tag}{{dimerUtils.propsToAttributes(node.props)}}/>`].join('\n')
+						? [`<${tag}{{{dimerUtils.propsToAttributes(node.props)}}}/>`].join('\n')
 						: [
-								`<${tag}{{dimerUtils.propsToAttributes(node.props)}}>`,
+								`<${tag}{{{dimerUtils.propsToAttributes(node.props)}}}>`,
 								'@dimerTree(node.children)~',
 								`</${tag}>`,
 						  ].join('\n'),

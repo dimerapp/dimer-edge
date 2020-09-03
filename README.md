@@ -1,4 +1,5 @@
 # Dimer Edge
+
 > Render dimer AST using [Edge.js](https://preview.adonisjs.com/guides/views/introduction/) components.
 
 [![circleci-image]][circleci-url] [![typescript-image]][typescript-url] [![npm-image]][npm-url] [![license-image]][license-url]
@@ -22,7 +23,8 @@ Dimer edge is a renderer package for dimer to hook into the process of generatin
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Why use Edge.js components?
-The simplest option is to convert markdown to HTML directly and render it on a webpage. 
+
+The simplest option is to convert markdown to HTML directly and render it on a webpage.
 
 To add some fun to this process (not just really for fun), we generate an AST (Abstract syntax tree) from the markdown and then convert that tree to HTML.
 
@@ -61,6 +63,22 @@ edge.mount(join(__dirname, 'views'))
 new Renderer(edge)
 
 /**
+ * Dummy markdown
+ */
+const markdownText = `
+## Heading 2
+
+A paragraph with an [anchor]()
+
+- List item 1
+- List item 2
+
+[note]
+This is a note
+[/note]
+`
+
+/**
  * Convert markdown to AST
  */
 const doc = await new Markdown(markdownText).toJSON()
@@ -77,23 +95,25 @@ Inside the `views/guides.edge` file you can make use the `@dimerTree` tag to ren
 @dimerTree(doc.contents.children)
 ```
 
-At this point, the output is nothing special or different from converting Markdown to HTML directly.
+At this point, the output is not different or special over converting Markdown to HTML directly. But wait, we will make it special using hooks.
 
 ## Defining hooks
 
 The renderer instance allows you to define hooks and use a custom component for any node of the AST. So, first let's visualize the AST nodes.
 
 #### A paragraph node
+
 ```json
 {
-  type: 'element',
-  tag: 'p',
-  props: {},
-  children: [{ type: 'text', value: 'Hello' }],
+  "type": "element",
+  "tag": "p",
+  "props": {},
+  "children": [{ "type": "text", "value": "Hello" }]
 }
 ```
 
 #### An anchor tag node
+
 ```json
 {
   "type": "element",
@@ -111,6 +131,7 @@ The renderer instance allows you to define hooks and use a custom component for 
 ```
 
 #### Node for a custom macro
+
 The following node is the output of the custom `[tip]` macro.
 
 ```json
@@ -118,16 +139,16 @@ The following node is the output of the custom `[tip]` macro.
   "type": "element",
   "tag": "div",
   "props": {
-    "className": ["alert", "alert-tip"],
+    "className": ["alert", "alert-tip"]
   },
   "children": [
     {
       "type": "element",
       "tag": "p",
       "props": {},
-      "children": [{ "type": "text", value: "Hello" }],
+      "children": [{ "type": "text", "value": "Hello" }]
     }
-  ],
+  ]
 }
 ```
 
@@ -136,12 +157,14 @@ Now, let's say we want to hook into the rendering processes and design the alert
 #### Step 1: Define hook
 
 The first step is to define a hook to render a custom component for all the alerts.
- 
+
 ```ts
 import { utils, component } from 'dimer-edge'
 
+const renderer = new Renderer(edge)
+
 renderer.hook((node) => {
-  if(utils.hasClass(node, 'alert')) {
+  if (utils.hasClass(node, 'alert')) {
     let alertType = 'alert'
 
     switch (node.props.className[1]) {
@@ -158,9 +181,9 @@ renderer.hook((node) => {
 
     return component('components/alert', {
       node: node,
-      type: alertType
+      type: alertType,
     })
-  } 
+  }
 })
 ```
 
@@ -169,17 +192,35 @@ renderer.hook((node) => {
 Creating a regular edge template named `components/alert.edge`.
 
 ```html
+@set('classes', { tip: 'bg-teal-100 border-teal-500 text-teal-900', note: 'bg-indigo-100
+border-indigo-500 text-indigo-900', warning: 'bg-orange-100 border-orange-500 text-orange-900', })
+@set('iconClasses', { tip: 'text-teal-500', note: 'text-indigo-500', warning: 'text-orange-500', })
 
+<div class="border-t-4 rounded-b px-4 py-3 shadow-md {{classes[type]}}" role="alert">
+  <div class="flex">
+    <div class="py-1">
+      <svg
+        class="fill-current h-6 w-6 {{iconClasses[type]}} mr-4"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+      >
+        <path
+          d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"
+        />
+      </svg>
+    </div>
+    <div>@dimerTree(node.children)~</div>
+  </div>
+</div>
 ```
 
+As of you can notice, we can freely define the markup of our alert component. Just make sure to render all the `children` nodes using `@dimerTree` component.
+
 [circleci-image]: https://img.shields.io/circleci/project/github/dimerapp/dimer-edge/master.svg?style=for-the-badge&logo=circleci
-[circleci-url]: https://circleci.com/gh/dimerapp/dimer-edge "circleci"
-
+[circleci-url]: https://circleci.com/gh/dimerapp/dimer-edge 'circleci'
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
-[typescript-url]:  "typescript"
-
+[typescript-url]: "typescript"
 [npm-image]: https://img.shields.io/npm/v/dimer-edge.svg?style=for-the-badge&logo=npm
-[npm-url]: https://npmjs.org/package/dimer-edge "npm"
-
+[npm-url]: https://npmjs.org/package/dimer-edge 'npm'
 [license-image]: https://img.shields.io/npm/l/dimer-edge?color=blueviolet&style=for-the-badge
-[license-url]: LICENSE.md "license"
+[license-url]: LICENSE.md 'license'

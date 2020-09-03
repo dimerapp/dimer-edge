@@ -7,17 +7,42 @@
  * file that was distributed with this source code.
  */
 
-import { GLOBALS } from 'edge.js'
 import info from 'property-information'
 import { htmlEscape } from 'escape-goat'
-import voidElements from 'html-void-elements'
-import { AstElement } from '../Contracts'
+import toString from 'hast-util-to-string'
+import { AstElement, AstText } from '../Contracts'
+
+const VOID_ELEMENTS = [
+	'area',
+	'base',
+	'basefont',
+	'bgsound',
+	'br',
+	'col',
+	'command',
+	'embed',
+	'frame',
+	'hr',
+	'image',
+	'img',
+	'input',
+	'isindex',
+	'keygen',
+	'link',
+	'menuitem',
+	'meta',
+	'nextid',
+	'param',
+	'source',
+	'track',
+	'wbr',
+]
 
 /**
  * Find if element is a void element or not
  */
 export function isVoidElement(element: string) {
-	return voidElements.includes(element)
+	return VOID_ELEMENTS.includes(element)
 }
 
 /**
@@ -29,39 +54,37 @@ export function propsToAttributes(props: any) {
 		return ''
 	}
 
-	return GLOBALS.safe(
-		` ${attributes
-			.reduce<string[]>((result, key) => {
-				const propInfo = info.find(info.html, key)
-				if (!propInfo || propInfo.space === 'svg') {
-					return result
-				}
-
-				let value = props[key]
-
-				/**
-				 * Join array values with correct seperator
-				 */
-				if (Array.isArray(value)) {
-					value = value.join(propInfo.commaSeparated ? ',' : ' ')
-				}
-
-				/**
-				 * Wrap values inside double quotes when not booleanish
-				 */
-				if (!propInfo.booleanish) {
-					value = `"${htmlEscape(value)}"`
-				}
-
-				/**
-				 * Push key value string
-				 */
-				result.push(`${propInfo.attribute}=${value}`)
-
+	return ` ${attributes
+		.reduce<string[]>((result, key) => {
+			const propInfo = info.find(info.html, key)
+			if (!propInfo || propInfo.space === 'svg') {
 				return result
-			}, [])
-			.join(' ')}`
-	)
+			}
+
+			let value = props[key]
+
+			/**
+			 * Join array values with correct seperator
+			 */
+			if (Array.isArray(value)) {
+				value = value.join(propInfo.commaSeparated ? ',' : ' ')
+			}
+
+			/**
+			 * Wrap values inside double quotes when not booleanish
+			 */
+			if (!propInfo.booleanish) {
+				value = `"${htmlEscape(value)}"`
+			}
+
+			/**
+			 * Push key value string
+			 */
+			result.push(`${propInfo.attribute}=${value}`)
+
+			return result
+		}, [])
+		.join(' ')}`
 }
 
 /**
@@ -69,17 +92,32 @@ export function propsToAttributes(props: any) {
  * given class name
  */
 export function hasClass(node: AstElement, className: string) {
-	if (!node || !node.props || !node.props.className) {
-		return false
+	return getClasses(node).includes(className)
+}
+
+/**
+ * Returns an classes for a node. The method ensures that you always
+ * get back an array, even when no classes are defined
+ */
+export function getClasses(node: AstElement): string[] {
+	if (!node.props || !node.props.className) {
+		return []
 	}
 
 	if (typeof node.props.className === 'string') {
-		return node.props.className === className
+		return [node.props.className]
 	}
 
 	if (Array.isArray(node.props.className)) {
-		return node.props.className.includes(className)
+		return node.props.className
 	}
 
-	return false
+	return []
+}
+
+/**
+ * Returns raw string for a node
+ */
+export function getText(node: AstElement | AstText): string {
+	return toString(node)
 }

@@ -15,6 +15,9 @@ import { component } from '../component'
 import { DimerTree } from '../DimerTree'
 import { AstText, AstElement, HookCallback, ComponentOutput } from '../Contracts'
 
+/**
+ * Noop component doesn't render anything
+ */
 const NOOP = ['dimer::noop', {}] as ComponentOutput
 
 /**
@@ -97,6 +100,9 @@ export class Renderer {
 	 * Returns the component for a given AST node
 	 */
 	public getComponentFor(node: AstElement | AstText): ReturnType<typeof component> {
+		/**
+		 * Notify listeners for the text node
+		 */
 		if (node.type === 'text') {
 			this.notifyListeners(node)
 			return ['dimer::text', { node }]

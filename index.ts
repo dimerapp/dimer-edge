@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+export * from './src/Contracts'
 export * as utils from './src/utils'
 export { Renderer } from './src/Renderer'
 export { component } from './src/component'

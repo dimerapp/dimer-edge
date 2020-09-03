@@ -17,6 +17,9 @@ import { Renderer } from '../Renderer'
  */
 const ALLOWED_EXPRESSIONS = ['MemberExpression', 'ArrayExpression', 'Identifier']
 
+/**
+ * Edge tag to recursively render Dimer AST
+ */
 export const DimerTree = (renderer: Renderer) => {
 	const tag: TagContract = {
 		tagName: 'dimerTree',

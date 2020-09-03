@@ -76,7 +76,7 @@
   "dependencies": {
     "edge-error": "^1.0.4",
     "escape-goat": "^3.0.0",
-    "html-void-elements": "^1.0.5",
+    "hast-util-to-string": "^1.0.4",
     "property-information": "^5.5.0"
   }
 }
