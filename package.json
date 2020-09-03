@@ -78,5 +78,20 @@
     "escape-goat": "^3.0.0",
     "hast-util-to-string": "^1.0.4",
     "property-information": "^5.5.0"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dimerapp/dimer-edge.git"
+  },
+  "keywords": [
+    "dimer",
+    "remark"
+  ],
+  "bugs": {
+    "url": "https://github.com/dimerapp/dimer-edge/issues"
+  },
+  "homepage": "https://github.com/dimerapp/dimer-edge#readme"
 }
